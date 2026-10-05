@@ -29,6 +29,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <ark_configurator/ArkConfigSettings.h>
 #include <stdlib.h>
 
+// inserito da noi 
+#include <iostream>
+
 ros::Publisher pub;
 ros::ServiceClient serv;
 std::string call_topic, response_topic, service_name;
@@ -51,12 +54,35 @@ void rosCallback(const ark_bridge::ArkConfigSettingsCall::ConstPtr& msg)
   srv.request.laser_fov = msg->laser_fov;
   srv.request.camera_3d_memory = msg->camera_3d_memory;
   srv.request.drive_direction = msg->drive_direction;
+  
 
   if(serv.call(srv)){
     ark_bridge::ArkConfigSettingsResponse response_message;
 
     response_message.result = srv.response.result;
     response_message.information = srv.response.information;
+
+    // INSERITO DA NOI
+
+    response_message.max_fwd_linear_speed =msg->max_fwd_linear_speed;
+    // response_message.max_fwd_linear_speed = srv.request.max_fwd_linear_speed;
+    response_message.max_rev_linear_speed = srv.request.max_rev_linear_speed;
+    response_message.min_linear_speed = srv.request.min_linear_speed;
+    response_message.max_linear_acceleration = srv.request.max_linear_acceleration;
+    response_message.max_linear_deceleration = srv.request.max_linear_deceleration;
+    response_message.max_ang_speed = srv.request.max_ang_speed;
+    response_message.max_ang_accel = srv.request.max_ang_accel;
+    response_message.vehicle_length = srv.request.vehicle_length;  
+    response_message.vehicle_width = srv.request.vehicle_width; 
+    response_message.stopping_distance_1M = srv.request.stopping_distance_1M; 
+    response_message.lidar_spacing = srv.request.lidar_spacing; 
+    response_message.laser_fov = srv.request.laser_fov; 
+    response_message.camera_3d_memory = srv.request.camera_3d_memory; 
+    response_message.drive_direction = srv.request.drive_direction; 
+
+    // std::cout <<"max_fwd_linear_speed" << srv.request.max_fwd_linear_speed << std::endl;
+    // FINO QUA 
+
 
     pub.publish(response_message);
   }
